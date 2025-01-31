@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { useFormik } from "formik";
 import { IAuth } from "@/interfaces";
 import * as Yup from "yup";
+import { useRegisterApiHook } from "@/hooks/auth.hooks";
+import { toast } from "react-toastify";
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -14,6 +16,7 @@ const SignupSchema = Yup.object().shape({
   password: Yup.string().min(8, "Too Short!").required("Required").max(16),
 });
 export default function Register() {
+  const { isPending, mutate } = useRegisterApiHook();
   const registerForm = useFormik<IAuth.RegisterApiPayload>({
     initialValues: {
       username: "",
@@ -24,7 +27,17 @@ export default function Register() {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: (values) => {
-      console.log(values);
+      mutate(values, {
+        onError(error) {
+          toast.error(error.message);
+        },
+        onSuccess(data) {
+          toast.success("User registered successfully");
+          // TODO: Store jwt token in localstorage
+          // Store user object
+          // Redirect to dashboard
+        },
+      });
     },
   });
   return (
@@ -44,6 +57,7 @@ export default function Register() {
               onChange={registerForm.handleChange}
               value={registerForm.values.username}
             />
+            <p className="text-red-500 mt-2">{registerForm.errors.username}</p>
           </Field>
           <Field className="mb-5">
             <Label className="text-sm/6 font-medium">Email</Label>
@@ -55,11 +69,10 @@ export default function Register() {
               onChange={registerForm.handleChange}
               value={registerForm.values.email}
             />
+            <p className="text-red-500 mt-2">{registerForm.errors.email}</p>
           </Field>
           <Field className="mb-5">
-            <Label className="text-sm/6 font-medium">
-              {registerForm.errors.password}
-            </Label>
+            <Label className="text-sm/6 font-medium">Password</Label>
             <Input
               placeholder="Password"
               name="password"
@@ -68,6 +81,7 @@ export default function Register() {
               onChange={registerForm.handleChange}
               value={registerForm.values.password}
             />
+            <p className="text-red-500 mt-2">{registerForm.errors.password}</p>
           </Field>
           <button
             type="submit"
@@ -78,7 +92,7 @@ export default function Register() {
                   !registerForm.isValid,
               }
             )}
-            disabled={!registerForm.isValid}
+            disabled={!registerForm.isValid && isPending}
           >
             Register
           </button>
