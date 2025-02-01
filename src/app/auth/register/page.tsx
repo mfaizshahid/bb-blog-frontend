@@ -6,6 +6,8 @@ import { IAuth } from "@/interfaces";
 import * as Yup from "yup";
 import { useRegisterApiHook } from "@/hooks/auth.hooks";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/slices/authenticationSlice";
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -17,6 +19,7 @@ const SignupSchema = Yup.object().shape({
 });
 export default function Register() {
   const { isPending, mutate } = useRegisterApiHook();
+  const dispatch = useDispatch();
   const registerForm = useFormik<IAuth.RegisterApiPayload>({
     initialValues: {
       username: "",
@@ -33,8 +36,12 @@ export default function Register() {
         },
         onSuccess(data) {
           toast.success("User registered successfully");
-          // TODO: Store jwt token in localstorage
-          // Store user object
+          console.log(data.data);
+          const _data = data.data;
+          const jwt = _data.jwt;
+          const user = _data.user;
+          localStorage.setItem("token", jwt);
+          dispatch(setUser(user));
           // Redirect to dashboard
         },
       });
