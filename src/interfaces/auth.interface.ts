@@ -4,6 +4,12 @@ export interface RegisterApiPayload {
   username: string;
 }
 
+//create a login payload interface
+export interface LoginApiPayload {
+  email: string;
+  password: string;
+}
+
 export interface AuthenticationState {
   user: User | null;
   loading: boolean;
