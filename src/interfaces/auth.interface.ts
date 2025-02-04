@@ -6,7 +6,7 @@ export interface RegisterApiPayload {
 
 //create a login payload interface
 export interface LoginApiPayload {
-  email: string;
+  identifier: string;
   password: string;
 }
 
