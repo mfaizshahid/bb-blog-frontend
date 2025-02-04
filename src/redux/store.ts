@@ -11,5 +11,7 @@ const makeStore = () =>
   });
 
 // Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>;
+
 export const store = makeStore();
+
+export type AppStore = ReturnType<typeof store.getState>;
