@@ -1,3 +1,5 @@
+import { IApp } from ".";
+
 export interface RegisterApiPayload {
   email: string;
   password: string;
@@ -13,7 +15,14 @@ export interface LoginApiPayload {
 export interface AuthenticationState {
   user: User | null;
   loading: boolean;
-  error: string | null;
+  error: AppError;
+  appState: IApp.AppStates;
+}
+
+export interface AppError {
+  msg: string;
+  type: string;
+  routeTo?: string;
 }
 export interface User {
   id: string;
