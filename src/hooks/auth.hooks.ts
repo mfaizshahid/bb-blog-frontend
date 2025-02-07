@@ -7,14 +7,11 @@ const useRegisterApiHook = () => {
   });
 };
 
-
-
 //create a userLoginApiHook here
 const useLoginApiHook = () => {
   return useMutation({
-    mutationFn: AuthApis.loginApi
+    mutationFn: AuthApis.loginApi,
   });
 };
 
-
-export { useRegisterApiHook, useLoginApiHook};
+export { useRegisterApiHook, useLoginApiHook };

@@ -1,7 +1,7 @@
 "use client";
 import { Field, Input, Label } from "@headlessui/react";
 import { useFormik } from "formik";
-import { IAuth } from "@/interfaces";
+import { IApp, IAuth } from "@/interfaces";
 import * as Yup from "yup";
 import clsx from "clsx";
 
@@ -9,6 +9,7 @@ import { useLoginApiHook } from "@/hooks/auth.hooks";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/authenticationSlice";
+import { useRouter } from "next/navigation";
 
 const LoginSchema = Yup.object().shape({
   identifier: Yup.string().email("Invalid email").required("Required"),
@@ -17,6 +18,7 @@ const LoginSchema = Yup.object().shape({
 export default function Login() {
   const { isPending, mutate } = useLoginApiHook();
   const dispatch = useDispatch();
+  const router = useRouter();
   const loginForm = useFormik<IAuth.LoginApiPayload>({
     initialValues: {
       identifier: "",
@@ -27,8 +29,11 @@ export default function Login() {
     validateOnBlur: true,
     onSubmit: (values) => {
       mutate(values, {
-        onError(error) {
-          toast.error(error.message);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError(error: any) {
+          console.log(error);
+          const _err = error.response.data.error.message;
+          toast.error(_err);
         },
         onSuccess(data) {
           toast.success("User logged in successfully");
@@ -36,13 +41,14 @@ export default function Login() {
           //Not sure how to change this section, we still have to store jwt
           //Therefore set user could be reused?
           //also this information should be
-          console.log(data.data);
+          console.log(data);
           const _data = data.data;
           const jwt = _data.jwt;
           const user = _data.user;
           localStorage.setItem("token", jwt);
           dispatch(setUser(user));
-          // Redirect to dashboard
+          // // Redirect to dashboard
+          router.push(IApp.AppRoutes.user.dashboard);
         },
       });
     },

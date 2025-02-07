@@ -36,3 +36,18 @@ export interface User {
   updatedAt: string;
   publishedAt: string;
 }
+
+export interface LoginUserResp {
+  jwt: string;
+  user: User;
+}
+
+export interface ApiErrorResp {
+  response: {
+    data: {
+      error: {
+        message: string;
+      };
+    };
+  };
+}
