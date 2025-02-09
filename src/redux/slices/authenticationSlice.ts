@@ -1,7 +1,6 @@
-import { UserUrls } from "@/apis/urls";
+import { AuthApis } from "@/apis";
 import { IApp, IAuth } from "@/interfaces";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
 const initializeState: IAuth.AuthenticationState = {
   user: null,
@@ -25,13 +24,9 @@ export const initUser = createAsyncThunk(
           routeTo: IApp.AppRoutes.auth.login,
         });
       }
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      const response = await axios.get(UserUrls.GET_USER, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
+      const response = await AuthApis.initUser();
+      return response;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return thunkAPI.rejectWithValue({
