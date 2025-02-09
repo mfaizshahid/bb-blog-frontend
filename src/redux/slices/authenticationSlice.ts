@@ -50,6 +50,10 @@ const authenticationSlice = createSlice({
     setAppState: (state, action: PayloadAction<IApp.AppStates>) => {
       state.appState = action.payload;
     },
+    logoutUser: (state) =>{
+      state.user = null
+      state.appState = IApp.AppStates.UNAUTHENTICATED;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(initUser.pending, (state) => {
@@ -69,5 +73,5 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { setUser, setAppState } = authenticationSlice.actions;
+export const { setUser, setAppState, logoutUser} = authenticationSlice.actions;
 export default authenticationSlice.reducer;

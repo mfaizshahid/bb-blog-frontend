@@ -39,3 +39,9 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+// User can click a button and then the user will log out
+//step 1 create button
+//step 2 button triggers function that erases jwt token from localstorage, user object gets cleared from state
+//step 3 redirect to login
