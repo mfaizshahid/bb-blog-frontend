@@ -26,9 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
       >
         <ReduxProvider>
           <InitUser>
@@ -39,7 +39,6 @@ export default function RootLayout({
     </html>
   );
 }
-
 
 // User can click a button and then the user will log out
 //step 1 create button
