@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { HomeIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/outline";
+import { Cog8ToothIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
+
 import SidebarLink from "@/components/sidebar/SidebarLink";
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +26,22 @@ export default function UserLayout({
           <SidebarLink
             icon={<HomeIcon width={22} height={22} />}
             title="Home"
-            href="/user"
+            href="/user/dashboard"
+          />
+           <SidebarLink
+            icon={<BookOpenIcon width={22} height={22} />}
+            title="Blogs"
+            href="/user/blogs"
+          />
+           <SidebarLink
+            icon={<PencilIcon width={22} height={22} />}
+            title="Write Blog"
+            href="/user/write-blog"
+          />
+           <SidebarLink
+            icon={<Cog8ToothIcon width={22} height={22} />}
+            title="Settings"
+            href="/user/settings"
           />
         </div>
       </div>
