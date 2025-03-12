@@ -15,7 +15,7 @@ export default function Dashboard() {
     router.push(IApp.AppRoutes.auth.login);
   };
 
-  const dashboardTitle = "This is a dashboard";
+  const dashboardTitle = "This is a dashboard card";
   const dashboardCount = 10;
 
   return (
