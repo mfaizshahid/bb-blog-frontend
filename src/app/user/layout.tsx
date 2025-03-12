@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
+import { SunIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
+import { LanguageIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/outline";
+import { UserIcon } from "@heroicons/react/24/outline";
+import { BellIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
 import SidebarLink from "@/components/sidebar/SidebarLink";
 export const metadata: Metadata = {
@@ -28,17 +34,17 @@ export default function UserLayout({
             title="Home"
             href="/user/dashboard"
           />
-           <SidebarLink
+          <SidebarLink
             icon={<BookOpenIcon width={22} height={22} />}
             title="Blogs"
             href="/user/blogs"
           />
-           <SidebarLink
+          <SidebarLink
             icon={<PencilIcon width={22} height={22} />}
             title="Write Blog"
             href="/user/write-blog"
           />
-           <SidebarLink
+          <SidebarLink
             icon={<Cog8ToothIcon width={22} height={22} />}
             title="Settings"
             href="/user/settings"
@@ -48,9 +54,30 @@ export default function UserLayout({
       {/* COntent */}
       <div className="w-10/12 bg-green-100">
         {/* Navbar */}
-        <div className="bg-blue-100">
-          <h1>Navbar</h1>
+        <div className="bg-blue-100 flex justify-between items-center p-5">
+          <div className="flex gap-2">
+            <MagnifyingGlassIcon width={22} height={22} />
+            <h1>Search</h1>
+          </div>
+          <div className="flex gap-2">
+            <button className="hover:bg-gray-100 rounded-full p-2">
+              <LanguageIcon width={22} height={22} />
+            </button>
+            <button className="hover:bg-gray-100 rounded-full p-2">
+              <SunIcon width={22} height={22} />
+            </button>
+            <button className="hover:bg-gray-100 rounded-full p-2">
+              <StarIcon width={22} height={22} />
+            </button>
+            <button className="hover:bg-gray-100 rounded-full p-2">
+              <BellIcon width={22} height={22} />
+            </button>
+            <button className="hover:bg-gray-100 rounded-full p-2">
+              <UserIcon width={22} height={22} />
+            </button>
+          </div>
         </div>
+
         <div className="bg-white h-full">{children}</div>
       </div>
     </div>
