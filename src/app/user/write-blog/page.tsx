@@ -15,7 +15,7 @@ const WriteBlog = () => {
       title: "",
       content: "",
       cover_img: "",
-      user: "",
+      user: { connect: [{ id: "1"}]},
       tags: [],
     },
     validationSchema: WriteBlogSchema,
