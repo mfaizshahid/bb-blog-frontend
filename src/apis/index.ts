@@ -1,3 +1,3 @@
 import * as AuthApis from "./auth.apis";
-
-export { AuthApis };
+import * as UserApis from "./users.apis";
+export { AuthApis, UserApis};
