@@ -6,6 +6,10 @@ import { useFormik, FieldArray, FormikProvider } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import MDEditor from "@uiw/react-md-editor";
+import { usePostBlogHook, useUploadImageHook } from "@/hooks/user.hooks";
+import { toast } from "react-toastify";
+import Image from "next/image";
+import { useRef } from "react";
 
 // tags = [
 //   {
@@ -15,7 +19,7 @@ import MDEditor from "@uiw/react-md-editor";
 const WriteBlogSchema = Yup.object().shape({
   title: Yup.string().required("Required"),
   content: Yup.string().required("Required"),
-  // cover_img: Yup.string().url().required("Required"),
+  cover_img: Yup.string().required("Required"),
   user: Yup.object().required("Required"),
   tags: Yup.array().of(
     Yup.object().shape({
@@ -26,6 +30,12 @@ const WriteBlogSchema = Yup.object().shape({
 
 const WriteBlog = () => {
   const { user } = useSelector((state: AppStore) => state.authentication);
+  const { mutate: imageUploadMutate, isPending: imageUploadLoading } =
+    useUploadImageHook();
+
+  const { mutate, isPending } = usePostBlogHook();
+  const imageUploadField = useRef<HTMLInputElement>(null);
+
   const writeBlogForm = useFormik({
     initialValues: {
       title: "",
@@ -34,15 +44,60 @@ const WriteBlog = () => {
         connect: [{ id: user!.id }],
       },
       tags: [],
+      cover_img: "",
     },
     validationSchema: WriteBlogSchema,
     onSubmit: (values) => {
-      console.log(values);
+      mutate(
+        { data: values },
+        {
+          onSuccess: () => {
+            toast.success("Blog posted successfully");
+            // TODO: Navigate back to the dashboard
+            writeBlogForm.resetForm({
+              title: "",
+              content: "",
+              user: {
+                connect: [{ id: user!.id }],
+              },
+              tags: [],
+              cover_img: "",
+            });
+            if (imageUploadField.current) {
+              imageUploadField.current.value = "";
+            }
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onError: (error: any) => {
+            const err = error?.response?.data ?? "Failed to post blog";
+            toast.error(err);
+          },
+        }
+      );
     },
   });
 
+  const imageUploadHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("files", file);
+    imageUploadMutate(formData, {
+      onSuccess: (data) => {
+        const url = `http://localhost:1337${data[0].url}`;
+        writeBlogForm.setFieldValue("cover_img", url);
+        toast.success("Image uploaded successfully");
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (error: any) => {
+        const err = error?.response?.data ?? "Failed to upload image";
+        toast.error(err);
+      },
+    });
+  };
+
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center py-12">
       <FormikProvider value={writeBlogForm}>
         <form
           onSubmit={writeBlogForm.handleSubmit}
@@ -78,6 +133,35 @@ const WriteBlog = () => {
               });
             }}
           />
+
+          {/* Cover Image field */}
+          <Field className="mb-5">
+            <Label className="text-sm/6 font-medium">Cover Image</Label>
+            <Input
+              type="file"
+              disabled={imageUploadLoading}
+              accept="image/*"
+              ref={imageUploadField}
+              className="mt-1 block w-full rounded-lg border  py-1.5 px-3"
+              onChange={imageUploadHandler}
+            />
+            {imageUploadLoading && (
+              <p className="text-blue-500 mt-2">Uploading...</p>
+            )}
+            {writeBlogForm.values.cover_img && (
+              <Image
+                src={writeBlogForm.values.cover_img}
+                alt="cover image"
+                width={500}
+                height={300}
+              />
+            )}
+            {writeBlogForm.errors.cover_img && (
+              <p className="text-red-500 mt-2">
+                {writeBlogForm.errors.cover_img}
+              </p>
+            )}
+          </Field>
 
           {/* Tags array field */}
           <FieldArray name="tags">
@@ -132,9 +216,9 @@ const WriteBlog = () => {
                   !writeBlogForm.isValid,
               }
             )}
-            disabled={!writeBlogForm.isValid}
+            disabled={!writeBlogForm.isValid || isPending}
           >
-            Login
+            Post Blog
           </button>
         </form>
       </FormikProvider>
